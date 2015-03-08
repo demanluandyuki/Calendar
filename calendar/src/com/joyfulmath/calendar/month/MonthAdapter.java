@@ -1,7 +1,9 @@
 package com.joyfulmath.calendar.month;
 
+import java.util.Calendar;
 import java.util.List;
 
+import com.joyfulmath.calendar.CalendarControl;
 import com.joyfulmath.calendar.R;
 
 import android.content.Context;
@@ -22,6 +24,7 @@ public class MonthAdapter extends ArrayAdapter<String> {
 		super(context, resource, objects);
 		mString = objects;
 		mInflater = LayoutInflater.from(context);
+		CalendarControl.getinstance().initMonth();
 		Log.i(TAG, "MonthAdapter");
 	}
 	
@@ -61,7 +64,8 @@ public class MonthAdapter extends ArrayAdapter<String> {
 		
 		mItemVeiw = (MonthItemView) convertView.findViewById(R.id.month_item_text);
 		mItemVeiw.setLines(position);
-		mItemVeiw.invalidate();
+		mItemVeiw.postInvalidate();
+		convertView.postInvalidate();
 		Log.i(TAG, "[getView] string:"+mString.get(position));
 		return convertView;
 	}
