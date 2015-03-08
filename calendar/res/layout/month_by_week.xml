@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
-        android:id="@+id/main_frame_id"
+    <com.joyfulmath.calendar.month.MonthListView
+        android:id="@+id/month_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:background="@color/month_week_background" />
 
 </LinearLayout>
