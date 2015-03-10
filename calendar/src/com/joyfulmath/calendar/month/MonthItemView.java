@@ -19,7 +19,9 @@ public class MonthItemView extends View {
 	public static final int MAX_LINES_OF_MONTH = 6;
 	
 	private static final String TAG = "calendar.MonthItemView";
-	
+	private static final int CALENDAR_CELL_WIDTH = 100;
+	private static final int CALENDAR_CELL_HEIGHT = 100;
+	private static final int CALENDAR_CELL_DIFF = 2;
 	private int mIndex  =-1;
 	private int year = -1;
 	private int month = -1;
@@ -44,12 +46,14 @@ public class MonthItemView extends View {
 		mString.clear();
 		mShowPaint = new Paint();
 		mShowPaint.setColor(Color.BLACK);
+		mShowPaint.setTextSize(28);
 		
 		mRBPaint = new Paint();
-		mRBPaint.setColor(Color.BLUE);
+		mRBPaint.setColor(Color.WHITE);
 		
 		mHPaint = new Paint();
 		mHPaint.setColor(Color.GRAY);
+		mHPaint.setTextSize(28);
 	}
 
 	public MonthItemView(Context context) {
@@ -60,30 +64,31 @@ public class MonthItemView extends View {
 	public void setLines(int position)
 	{
 		mIndex = position;
+		this.invalidate();
 		Log.i(TAG, "[setLines]mLine:"+mIndex);
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		Log.i(TAG, "[onDraw]");
+		Log.i(TAG, "[onDraw]mIndex:"+mIndex);
 		super.onDraw(canvas);
 		canvas.save();
 		for(int i=1;i<=CalendarControl.WEEK_DAY_LENGTH;i++)
 		{
 			MonthItem item = mControl.getMonthShowItem(mIndex, i);
 			canvas.save();
-			int left = (i-1)*100;
-			int top = mIndex*100;
-			int right = left+100;
-			int bottom = top+100;		
+			int left = (i-1)*CALENDAR_CELL_WIDTH+CALENDAR_CELL_DIFF;
+			int top = 0*CALENDAR_CELL_HEIGHT;
+			int right = left+CALENDAR_CELL_WIDTH;
+			int bottom = top+CALENDAR_CELL_HEIGHT;		
 			canvas.drawRect(left, top, right, bottom, mRBPaint);
 			if(item.mEnable)
 			{
-				canvas.drawText(item.mDay, left+20, top+10, mShowPaint);
+				canvas.drawText(item.mDay, left+20, top+30, mShowPaint);
 			}
 			else
 			{
-				canvas.drawText(item.mDay, left+20, top+10, mHPaint);
+				canvas.drawText(item.mDay, left+20, top+30, mHPaint);
 			}
 			canvas.restore();
 		}
@@ -92,11 +97,14 @@ public class MonthItemView extends View {
 		Log.i(TAG, "[onDraw] leave");
 	}
 
+	
+	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 //		Log.i(TAG, String.format("[onMeasure]widthMeasureSpec:0X%x", widthMeasureSpec));
 //		Log.i(TAG, "[onMeasure]heightMeasureSpec:"+heightMeasureSpec);
+		this.setMeasuredDimension(CALENDAR_CELL_WIDTH*CalendarControl.WEEK_DAY_LENGTH, CALENDAR_CELL_HEIGHT);
 	}
 		
 

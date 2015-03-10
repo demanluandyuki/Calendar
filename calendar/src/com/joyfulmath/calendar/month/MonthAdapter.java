@@ -36,7 +36,7 @@ public class MonthAdapter extends ArrayAdapter<String> {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		Log.i(TAG, "getCount");
+		Log.i(TAG, "getCount:"+MonthItemView.MAX_LINES_OF_MONTH);
 		return MonthItemView.MAX_LINES_OF_MONTH;
 	}
 
@@ -56,16 +56,20 @@ public class MonthAdapter extends ArrayAdapter<String> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.i(TAG, "[getView]");
+		Log.i(TAG, "[getView]:position:"+position);
 		if(convertView==null)
 		{
 			convertView = mInflater.inflate(R.layout.month_list_item, null);
 		}
 		
-		mItemVeiw = (MonthItemView) convertView.findViewById(R.id.month_item_text);
-		mItemVeiw.setLines(position);
-		mItemVeiw.postInvalidate();
-		convertView.postInvalidate();
+		if(convertView instanceof MonthItemView)
+		{
+			MonthItemView itemview = (MonthItemView)convertView;
+			itemview.setLines(position);
+			itemview.postInvalidate();
+		}
+		
+
 		Log.i(TAG, "[getView] string:"+mString.get(position));
 		return convertView;
 	}
