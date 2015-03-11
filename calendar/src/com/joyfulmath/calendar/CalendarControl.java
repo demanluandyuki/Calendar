@@ -48,13 +48,15 @@ public class CalendarControl {
 		if (nextLines > 0) {
 			mEnableLines = mEnableLines + 1;
 		}
-
+		Log.i(TAG, "[initMonth]firstDayindex:" + firstDayindex
+				+ " mEnableLines:" + mEnableLines + " monthDaySize:"
+				+ monthDaySize + " nextLines:" + nextLines);
 		return firstDayindex;
 	}
 
 	public MonthItem getMonthShowItem(int position, int row)// row form 1---7
 	{
-		Log.i(TAG, "[getMonthShowItem]position:"+position+" row:"+row);
+		Log.i(TAG, "[getMonthShowItem]position:" + position + " row:" + row);
 		if (row < 1 || row > 7) {
 			Log.w(TAG, "[getMonthShowItem]row out of rang");
 			return null;
@@ -80,26 +82,28 @@ public class CalendarControl {
 			item.mDay = String.valueOf(row + position * WEEK_DAY_LENGTH);
 			item.mEnable = true;
 		} else if (position == (mEnableLines - 1)) {
-			if (row <=(nextLines+1)) {
-				//current month
+			if (row <= (nextLines)) {
+				// current month
 				item.index = row;
 				item.mDay = String.valueOf(row + position * WEEK_DAY_LENGTH);
 				item.mEnable = true;
 			} else {
-				//next month
-				int day = row + position * WEEK_DAY_LENGTH - firstDayindex-monthDaySize;
+				// next month
+				int day = row + position * WEEK_DAY_LENGTH - firstDayindex
+						- monthDaySize+1;
 				item.index = row;
 				item.mDay = String.valueOf(day);
 				item.mEnable = false;
 			}
 		} else if (position > (mEnableLines - 1)) {
 			// next month
-			int day = row + position * WEEK_DAY_LENGTH - firstDayindex-monthDaySize;
+			int day = row + position * WEEK_DAY_LENGTH - firstDayindex
+					- monthDaySize+1;
 			item.index = row;
 			item.mDay = String.valueOf(day);
 			item.mEnable = false;
 		}
-
+		Log.i(TAG, "[getMonthShowItem]Levae item.mDay:" + item.mDay);
 		return item;
 	}
 }
