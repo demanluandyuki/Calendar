@@ -36,7 +36,8 @@ public final class R {
         public static final int activity_calendar_main=0x7f030000;
         public static final int all_in_one=0x7f030001;
         public static final int month_by_week=0x7f030002;
-        public static final int month_list_item=0x7f030003;
+        public static final int month_list_head=0x7f030003;
+        public static final int month_list_item=0x7f030004;
     }
     public static final class menu {
         public static final int calendar_main=0x7f080000;

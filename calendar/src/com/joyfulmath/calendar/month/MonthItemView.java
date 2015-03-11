@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.joyfulmath.calendar.CalendarControl;
+import com.joyfulmath.calendar.util.Tool;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -19,24 +20,14 @@ public class MonthItemView extends View {
 	public static final int MAX_LINES_OF_MONTH = 6;
 	
 	private static final String TAG = "calendar.MonthItemView";
-	private static final int CALENDAR_CELL_WIDTH = 100;
-	private static final int CALENDAR_CELL_HEIGHT = 100;
-	private static final int CALENDAR_CELL_DIFF = 2;
 	private int mIndex  =-1;
-	private int year = -1;
-	private int month = -1;
-	private int day = -1;
-	private int dayofweek = -1;
-	private int hour = -1;
-	private int minute = -1;
-	private Calendar nowCal = null;
 	private CalendarControl mControl = null;
 	private List<Integer> mString = new ArrayList<Integer>();
 	
 	private Paint mShowPaint = null;
 	private Paint mHPaint = null;
 	private Paint mRBPaint = null;
-	private int mRectWidth = 100;
+	private Paint mLinePaint = null;
 	public MonthItemView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.setWillNotDraw(false);
@@ -49,11 +40,16 @@ public class MonthItemView extends View {
 		mShowPaint.setTextSize(28);
 		
 		mRBPaint = new Paint();
-		mRBPaint.setColor(Color.WHITE);
+		mRBPaint.setColor(Color.BLUE);
 		
 		mHPaint = new Paint();
 		mHPaint.setColor(Color.GRAY);
 		mHPaint.setTextSize(28);
+		
+		mLinePaint = new Paint();
+		mLinePaint.setColor(Color.argb(0xff, 0x57, 0x57, 0x57));
+		mLinePaint.setStrokeWidth(Tool.CALENDAR_CELL_DIFF);
+		Log.i(TAG, "[MonthItemView] constructor CALENDAR_CELL_WIDTH:"+Tool.CALENDAR_CELL_WIDTH);
 	}
 
 	public MonthItemView(Context context) {
@@ -79,15 +75,18 @@ public class MonthItemView extends View {
 		Log.i(TAG, "[onDraw]mIndex:"+mIndex);
 		super.onDraw(canvas);
 		canvas.save();
-		for(int i=1;i<=CalendarControl.WEEK_DAY_LENGTH;i++)
+		for(int i=1;i<=Tool.WEEK_DAY_LENGTH;i++)
 		{
 			MonthItem item = mControl.getMonthShowItem(mIndex, i);
 			canvas.save();
-			int left = (i-1)*CALENDAR_CELL_WIDTH+CALENDAR_CELL_DIFF;
-			int top = 0*CALENDAR_CELL_HEIGHT;
-			int right = left+CALENDAR_CELL_WIDTH;
-			int bottom = top+CALENDAR_CELL_HEIGHT;		
-			canvas.drawRect(left, top, right, bottom, mRBPaint);
+			int left = (i-1)*(Tool.CALENDAR_CELL_WIDTH+Tool.CALENDAR_CELL_DIFF);
+			int top = 0*Tool.CALENDAR_CELL_HEIGHT;
+			int right = left+Tool.CALENDAR_CELL_WIDTH;
+			int bottom = top+Tool.CALENDAR_CELL_HEIGHT;
+			if(item.current)
+			{
+				canvas.drawRect(left, top, right, bottom, mRBPaint);
+			}
 			if(item.mEnable)
 			{
 				canvas.drawText(item.mDay, left+20, top+30, mShowPaint);
@@ -96,6 +95,9 @@ public class MonthItemView extends View {
 			{
 				canvas.drawText(item.mDay, left+20, top+30, mHPaint);
 			}
+			
+			canvas.drawLine(right, top, right, bottom, mLinePaint);
+			
 			canvas.restore();
 		}
 				
@@ -110,7 +112,7 @@ public class MonthItemView extends View {
 //		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 //		Log.i(TAG, String.format("[onMeasure]widthMeasureSpec:0X%x", widthMeasureSpec));
 //		Log.i(TAG, "[onMeasure]heightMeasureSpec:"+heightMeasureSpec);
-		this.setMeasuredDimension(CALENDAR_CELL_WIDTH*CalendarControl.WEEK_DAY_LENGTH, CALENDAR_CELL_HEIGHT);
+		this.setMeasuredDimension(Tool.mScreenWidth, Tool.CALENDAR_CELL_HEIGHT);
 	}
 		
 

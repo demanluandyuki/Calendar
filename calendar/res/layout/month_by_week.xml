@@ -7,6 +7,8 @@
     <com.joyfulmath.calendar.month.MonthListView
         android:id="@+id/month_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:divider="#FF575757"
+        android:dividerHeight="2px"/>
 
 </RelativeLayout>

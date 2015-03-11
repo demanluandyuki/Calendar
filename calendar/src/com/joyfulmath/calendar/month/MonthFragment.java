@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.joyfulmath.calendar.R;
+import com.joyfulmath.calendar.util.Tool;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -21,12 +22,14 @@ public class MonthFragment extends Fragment {
 	private MonthAdapter mAdapter = null;
 	private List<String> mStrings = new ArrayList<String>();
 	private Context mContext = null;
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mContext = activity;
 		initStrings();
+		Tool mTools = new Tool(mContext);
+		mTools.initParams();
 		Log.i(TAG, "[onAttach] leave");
 	}
 
@@ -41,11 +44,16 @@ public class MonthFragment extends Fragment {
 			Bundle savedInstanceState) {
 		Log.i(TAG, "[onCreateView]");
 		View v;
-		v = inflater.inflate(R.layout.month_by_week, container,false);
+		v = inflater.inflate(R.layout.month_by_week, container, false);
 		mList = (MonthListView) v.findViewById(R.id.month_list);
-		mAdapter = new MonthAdapter(mContext,R.layout.month_list_item,mStrings);
+		View headview = inflater
+				.inflate(R.layout.month_list_head, mList, false);
+		mList.addHeaderView(headview);
+		mAdapter = new MonthAdapter(mContext, R.layout.month_list_item,
+				mStrings);
 		mList.setAdapter(mAdapter);
 		Log.i(TAG, "[onCreateView] leave");
+		
 		return v;
 	}
 
@@ -74,9 +82,8 @@ public class MonthFragment extends Fragment {
 		super.onResume();
 		Log.i(TAG, "[onResume]");
 	}
-	
-	public void initStrings()
-	{
+
+	public void initStrings() {
 		mStrings.clear();
 		mStrings.add("1");
 		mStrings.add("2");
@@ -85,5 +92,5 @@ public class MonthFragment extends Fragment {
 		mStrings.add("5");
 		mStrings.add("6");
 	}
-	
+
 }

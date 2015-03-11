@@ -4,22 +4,20 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.joyfulmath.calendar.month.MonthItem;
+import com.joyfulmath.calendar.util.Tool;
 
 import android.util.Log;
 
 public class CalendarControl {
 
-	public static final int WEEK_DAY_LENGTH = 7;
 	private static final String TAG = "calendar.CalendarControl";
 	private static CalendarControl mInstance = null;
-	public static int mScreenWidth = -1;
-	public static int mScreenHeight = -1;
 	private int monthDaySize = -1;
 	private int firstDayindex = -1;
 	private int lastMonthDaySize = -1;
 	private int mEnableLines = -1;
 	private int nextLines = -1;
-
+	private int currentDay = -1;
 	public static CalendarControl getinstance() {
 		if (mInstance == null) {
 			mInstance = new CalendarControl();
@@ -33,8 +31,12 @@ public class CalendarControl {
 
 	public int initMonth() {
 		Calendar cal = Calendar.getInstance();
+		currentDay = cal.get(Calendar.DAY_OF_MONTH);
+		Log.i(TAG, "[getFirstDay]currentDay:" + currentDay);
+		
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		Log.i(TAG, "[getFirstDay]cal:" + cal.getTime());
+		
 		firstDayindex = cal.get(Calendar.DAY_OF_WEEK);
 		monthDaySize = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 		Log.i(TAG, "[getFirstDay]monthDaySize:" + monthDaySize);
@@ -42,9 +44,9 @@ public class CalendarControl {
 		cal.add(Calendar.DAY_OF_MONTH, -1);// last month
 		lastMonthDaySize = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-		mEnableLines = (firstDayindex + monthDaySize - 1) / WEEK_DAY_LENGTH;
+		mEnableLines = (firstDayindex + monthDaySize - 1) / Tool.WEEK_DAY_LENGTH;
 
-		nextLines = (firstDayindex + monthDaySize - 1) % WEEK_DAY_LENGTH;
+		nextLines = (firstDayindex + monthDaySize - 1) % Tool.WEEK_DAY_LENGTH;
 		if (nextLines > 0) {
 			mEnableLines = mEnableLines + 1;
 		}
@@ -73,23 +75,40 @@ public class CalendarControl {
 			} else {
 				// current month
 				item.index = row;
-				item.mDay = String.valueOf(row);
+				int day = row+1-firstDayindex;
+				item.mDay = String.valueOf(day);
 				item.mEnable = true;
+				
+				if(day == currentDay)
+				{
+					item.current = true;
+				}
+				
 			}
 		} else if (position < (mEnableLines - 1)) {
 			// enable lines
 			item.index = row;
-			item.mDay = String.valueOf(row + position * WEEK_DAY_LENGTH);
+			int day = row + position * Tool.WEEK_DAY_LENGTH+1-firstDayindex;
+			item.mDay = String.valueOf(day);
 			item.mEnable = true;
+			if(day == currentDay)
+			{
+				item.current = true;
+			}
 		} else if (position == (mEnableLines - 1)) {
 			if (row <= (nextLines)) {
 				// current month
 				item.index = row;
-				item.mDay = String.valueOf(row + position * WEEK_DAY_LENGTH);
+				int day = row + position * Tool.WEEK_DAY_LENGTH+1-firstDayindex;
+				item.mDay = String.valueOf(day);
 				item.mEnable = true;
+				if(day == currentDay)
+				{
+					item.current = true;
+				}
 			} else {
 				// next month
-				int day = row + position * WEEK_DAY_LENGTH - firstDayindex
+				int day = row + position * Tool.WEEK_DAY_LENGTH - firstDayindex
 						- monthDaySize+1;
 				item.index = row;
 				item.mDay = String.valueOf(day);
@@ -97,7 +116,7 @@ public class CalendarControl {
 			}
 		} else if (position > (mEnableLines - 1)) {
 			// next month
-			int day = row + position * WEEK_DAY_LENGTH - firstDayindex
+			int day = row + position * Tool.WEEK_DAY_LENGTH - firstDayindex
 					- monthDaySize+1;
 			item.index = row;
 			item.mDay = String.valueOf(day);
