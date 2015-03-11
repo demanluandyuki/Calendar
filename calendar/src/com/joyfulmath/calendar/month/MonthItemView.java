@@ -57,12 +57,18 @@ public class MonthItemView extends View {
 
 	}
 	
-	public void setLines(int position)
+	public void setLines(int position,int screenWidth,int screenHeight)
 	{
 		mIndex = position;
 		Log.i(TAG, "[setLines]mLine:"+mIndex);
 	}
 
+	public void setLines(int position)
+	{
+		mIndex = position;
+		Log.i(TAG, "[setLines]mLine:"+mIndex);
+	}
+	
 	@Override
 	protected void onDraw(Canvas canvas) {
 		Log.i(TAG, "[onDraw]");

@@ -12,7 +12,8 @@ public class CalendarControl {
 	public static final int WEEK_DAY_LENGTH = 7;
 	private static final String TAG = "calendar.CalendarControl";
 	private static CalendarControl mInstance = null;
-
+	public static int mScreenWidth = -1;
+	public static int mScreenHeight = -1;
 	private int monthDaySize = -1;
 	private int firstDayindex = -1;
 	private int lastMonthDaySize = -1;
