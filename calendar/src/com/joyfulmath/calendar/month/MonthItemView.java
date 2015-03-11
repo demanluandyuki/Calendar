@@ -40,7 +40,7 @@ public class MonthItemView extends View {
 		mShowPaint.setTextSize(28);
 		
 		mRBPaint = new Paint();
-		mRBPaint.setColor(Color.BLUE);
+		mRBPaint.setColor(Color.argb(0xaa, 0x00, 0x00, 0xff));
 		
 		mHPaint = new Paint();
 		mHPaint.setColor(Color.GRAY);
