@@ -1,7 +1,6 @@
 package com.joyfulmath.calendar;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import com.joyfulmath.calendar.month.MonthItem;
 import com.joyfulmath.calendar.util.Tool;
@@ -10,6 +9,9 @@ import android.util.Log;
 
 public class CalendarControl {
 
+	public static final int MOVE_LAST_MONTH = 1;
+	public static final int MOVE_NEXT_MONTH = 2;
+	
 	private static final String TAG = "calendar.CalendarControl";
 	private static CalendarControl mInstance = null;
 	private int monthDaySize = -1;
@@ -18,6 +20,7 @@ public class CalendarControl {
 	private int mEnableLines = -1;
 	private int nextLines = -1;
 	private int currentDay = -1;
+	private Calendar mShowMonth = null;
 	public static CalendarControl getinstance() {
 		if (mInstance == null) {
 			mInstance = new CalendarControl();
@@ -26,20 +29,16 @@ public class CalendarControl {
 	}
 
 	private CalendarControl() {
-
-	}
-
-	public int initMonth() {
-		Calendar cal = Calendar.getInstance();
-		currentDay = cal.get(Calendar.DAY_OF_MONTH);
-		Log.i(TAG, "[getFirstDay]currentDay:" + currentDay);
 		
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		Log.i(TAG, "[getFirstDay]cal:" + cal.getTime());
+	}
+		
+	public int setMonth(Calendar showMonth)
+	{
+		Calendar cal = showMonth;
 		
 		firstDayindex = cal.get(Calendar.DAY_OF_WEEK);
 		monthDaySize = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-		Log.i(TAG, "[getFirstDay]monthDaySize:" + monthDaySize);
+		Log.i(TAG, "[setMonth]monthDaySize:" + monthDaySize);
 
 		cal.add(Calendar.DAY_OF_MONTH, -1);// last month
 		lastMonthDaySize = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -50,15 +49,85 @@ public class CalendarControl {
 		if (nextLines > 0) {
 			mEnableLines = mEnableLines + 1;
 		}
-		Log.i(TAG, "[initMonth]firstDayindex:" + firstDayindex
+		
+		Log.i(TAG, "[setMonth]firstDayindex:" + firstDayindex
 				+ " mEnableLines:" + mEnableLines + " monthDaySize:"
 				+ monthDaySize + " nextLines:" + nextLines);
 		return firstDayindex;
 	}
+		
+	public int initMonth(Calendar showMonth) {
+		int firstday = -1;
+		Calendar currentCal = Calendar.getInstance();
+		currentDay = currentCal.get(Calendar.DAY_OF_MONTH);
+		Log.i(TAG, "[initMonth]currentDay:" + currentDay);
+		if(showMonth == null)
+		{
+			currentCal.set(Calendar.DAY_OF_MONTH, 1);
+			mShowMonth = (Calendar) currentCal.clone();
+			firstday = setMonth(currentCal);
 
+		}
+		else
+		{
+			showMonth.set(Calendar.DAY_OF_MONTH, 1);
+			mShowMonth = (Calendar) showMonth.clone();
+			firstday = setMonth(showMonth);
+
+		}
+		
+		return firstday;
+	}
+
+	public void moveToLastMonth()
+	{
+		Log.i(TAG, "[moveToLastMonth]mShowMonth:"+mShowMonth.getTime());
+		if(mShowMonth==null)
+		{
+			mShowMonth = Calendar.getInstance();
+			mShowMonth.set(Calendar.DAY_OF_MONTH, 1);
+		}
+
+		//get last month
+		mShowMonth.add(Calendar.MONTH, -1);
+		Calendar cal = (Calendar) mShowMonth.clone();
+		setMonth(cal);
+	}
+		
+	public void moveToNextMonth()
+	{
+		Log.i(TAG, "[moveToNextMonth]mShowMonth:"+mShowMonth.getTime());
+		if(mShowMonth==null)
+		{
+			mShowMonth = Calendar.getInstance();
+			mShowMonth.set(Calendar.DAY_OF_MONTH, 1);
+		}
+		
+		//get last month
+		mShowMonth.add(Calendar.MONTH, 1);
+		Calendar cal = (Calendar) mShowMonth.clone();
+		setMonth(cal);
+	}
+	
+	public String getShowMonthText()
+	{
+		if(mShowMonth == null)
+		{
+			Log.w(TAG, "mShowMonth is null");
+			return null;
+		}
+		
+		String text = null;
+		
+		text = String.format("%d/%d", mShowMonth.get(Calendar.YEAR),mShowMonth.get(Calendar.MONTH)+1);
+		Log.i(TAG, "mShowMonth:"+mShowMonth.getTime());
+		return text;
+		
+	}
+	
 	public MonthItem getMonthShowItem(int position, int row)// row form 1---7
 	{
-		Log.i(TAG, "[getMonthShowItem]position:" + position + " row:" + row);
+		Log.d(TAG, "[getMonthShowItem]position:" + position + " row:" + row);
 		if (row < 1 || row > 7) {
 			Log.w(TAG, "[getMonthShowItem]row out of rang");
 			return null;
@@ -96,8 +165,9 @@ public class CalendarControl {
 				item.current = true;
 			}
 		} else if (position == (mEnableLines - 1)) {
-			if (row <= (nextLines)) {
-				// current month
+			if(nextLines == 0)
+			{
+				//current month and last month
 				item.index = row;
 				int day = row + position * Tool.WEEK_DAY_LENGTH+1-firstDayindex;
 				item.mDay = String.valueOf(day);
@@ -106,14 +176,31 @@ public class CalendarControl {
 				{
 					item.current = true;
 				}
-			} else {
-				// next month
-				int day = row + position * Tool.WEEK_DAY_LENGTH - firstDayindex
-						- monthDaySize+1;
-				item.index = row;
-				item.mDay = String.valueOf(day);
-				item.mEnable = false;
 			}
+			else
+			{
+				if (row <= (nextLines)) {
+					// current month
+					item.index = row;
+					int day = row + position * Tool.WEEK_DAY_LENGTH+1-firstDayindex;
+					item.mDay = String.valueOf(day);
+					item.mEnable = true;
+					if(day == currentDay)
+					{
+						item.current = true;
+					}
+				} else {
+					// next month
+					int day = row + position * Tool.WEEK_DAY_LENGTH - firstDayindex
+							- monthDaySize+1;
+					item.index = row;
+					item.mDay = String.valueOf(day);
+					item.mEnable = false;
+				}
+			}
+			
+			
+			
 		} else if (position > (mEnableLines - 1)) {
 			// next month
 			int day = row + position * Tool.WEEK_DAY_LENGTH - firstDayindex
@@ -122,7 +209,7 @@ public class CalendarControl {
 			item.mDay = String.valueOf(day);
 			item.mEnable = false;
 		}
-		Log.i(TAG, "[getMonthShowItem]Levae item.mDay:" + item.mDay);
+		Log.d(TAG, "[getMonthShowItem]Levae item.mDay:" + item.mDay);
 		return item;
 	}
 }

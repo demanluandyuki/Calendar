@@ -1,7 +1,6 @@
 package com.joyfulmath.calendar.month;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import com.joyfulmath.calendar.CalendarControl;

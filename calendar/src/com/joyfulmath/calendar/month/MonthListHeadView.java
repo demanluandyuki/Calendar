@@ -51,8 +51,8 @@ public class MonthListHeadView extends View {
 			canvas.save();
 			int left = (i-1)*(Tool.CALENDAR_CELL_WIDTH+Tool.CALENDAR_CELL_DIFF);
 			int top = 0*Tool.CALENDAR_CELL_HEIGHT;
-			int right = left+Tool.CALENDAR_CELL_WIDTH;
-			int bottom = top+Tool.CALENDAR_CELL_HEIGHT;
+//			int right = left+Tool.CALENDAR_CELL_WIDTH;
+//			int bottom = top+Tool.CALENDAR_CELL_HEIGHT;
 			
 			float textwidth = mTPaint.measureText(mWeeks[i-1]);
 			

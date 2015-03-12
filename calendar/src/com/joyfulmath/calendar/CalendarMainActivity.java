@@ -4,11 +4,11 @@ import com.joyfulmath.calendar.month.MonthFragment;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
+import android.view.WindowManager;
 
 public class CalendarMainActivity extends Activity {
 
@@ -18,6 +18,7 @@ public class CalendarMainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "[onCreate]");
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.all_in_one);
 		setFragment();
 	}
